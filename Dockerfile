@@ -3,20 +3,18 @@ FROM eclipse-temurin:21-jdk AS build
 
 WORKDIR /app
 
-# Copia os arquivos do Gradle (usando * para cobrir .gradle e .gradle.kts)
-COPY gradlew .
-COPY gradle gradle
+# Copia apenas os arquivos de configuração que existem
+COPY gradlew* ./
 COPY build.gradle* settings.gradle* ./
 
-# Permissão e download de dependências
-RUN chmod +x gradlew
-RUN ./gradlew dependencies --no-daemon || true
+# Se você não tiver o gradlew, o comando abaixo garante permissão apenas se o arquivo existir
+RUN if [ -f gradlew ]; then chmod +x gradlew; fi
 
-# Copia todo o código-fonte
+# Copia todo o código para compilar
 COPY . .
 
 # Compila a aplicação
-RUN ./gradlew bootJar --no-daemon
+RUN if [ -f gradlew ]; then ./gradlew bootJar --no-daemon; else gradle bootJar --no-daemon; fi
 
 # Etapa 2: Imagem final leve (JRE 21)
 FROM eclipse-temurin:21-jre
