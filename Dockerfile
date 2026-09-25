@@ -6,8 +6,8 @@ WORKDIR /app
 # Copia todo o conteúdo da pasta condservice
 COPY . .
 
-# Compila o JAR do Spring Boot desativando os testes
-RUN gradle bootJar --no-daemon -x test -Dorg.gradle.jvmargs="-Xmx384m -XX:MaxMetaspaceSize=192m"
+# Compila o JAR do Spring Boot ignorando os testes
+RUN gradle bootJar --no-daemon -x test
 
 # Etapa 2: Imagem final leve para execução (JRE 21)
 FROM eclipse-temurin:21-jre
