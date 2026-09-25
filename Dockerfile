@@ -1,26 +1,20 @@
-# Etapa 1: Build com Java 21
-FROM eclipse-temurin:21-jdk AS build
+# Etapa 1: Build da aplicação usando a imagem oficial do Gradle com Java 21
+FROM gradle:8.5-jdk21 AS build
 
 WORKDIR /app
 
-# Copia apenas os arquivos de configuração que existem
-COPY gradlew* ./
-COPY build.gradle* settings.gradle* ./
-
-# Se você não tiver o gradlew, o comando abaixo garante permissão apenas se o arquivo existir
-RUN if [ -f gradlew ]; then chmod +x gradlew; fi
-
-# Copia todo o código para compilar
+# Copia todo o código-fonte do projeto para dentro do contêiner
 COPY . .
 
-# Compila a aplicação
-RUN if [ -f gradlew ]; then ./gradlew bootJar --no-daemon; else gradle bootJar --no-daemon; fi
+# Compila o projeto gerando o JAR do Spring Boot sem rodar os testes
+RUN gradle bootJar --no-daemon -x test
 
-# Etapa 2: Imagem final leve (JRE 21)
+# Etapa 2: Imagem final leve apenas para execução (JRE 21)
 FROM eclipse-temurin:21-jre
 
 WORKDIR /app
 
+# Copia o JAR gerado (ignorando arquivos -plain.jar)
 COPY --from=build /app/build/libs/*[!plain].jar app.jar
 
 EXPOSE 8080
