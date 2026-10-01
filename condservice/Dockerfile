@@ -11,7 +11,7 @@ RUN apk add --no-cache dos2unix
 # Copia apenas os arquivos do Gradle primeiro para aproveitar o cache de camadas do Docker
 COPY gradlew .
 COPY gradle ./gradle
-COPY build.gradle settings.gradle ./
+COPY build.gradle.kts settings.gradle.kts ./
 
 # Corrige quebra de linha e permissão do script gradlew
 RUN dos2unix gradlew && chmod +x gradlew
