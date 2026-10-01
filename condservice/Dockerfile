@@ -7,7 +7,9 @@ WORKDIR /app
 COPY . .
 
 # Compila o JAR do Spring Boot ignorando os testes
-RUN gradle bootJar --no-daemon -x test
+# Grant execution rights on the Gradle wrapper before running the build
+RUN chmod +x ./gradlew
+RUN ./gradlew bootJar --no-daemon -x test
 
 # Etapa 2: Imagem final leve para execução (JRE 21)
 FROM eclipse-temurin:21-jre
