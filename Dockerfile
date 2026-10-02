@@ -8,7 +8,7 @@ RUN chmod +x gradlew
 
 RUN ./gradlew clean bootJar --stacktrace --info --no-daemon
 
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:25-jre
 
 WORKDIR /app
 
