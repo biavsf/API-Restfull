@@ -1,6 +1,3 @@
-# ==========================================
-# ETAPA 1: Build
-# ==========================================
 FROM eclipse-temurin:25-jdk AS build
 
 WORKDIR /app
@@ -12,18 +9,18 @@ RUN chmod +x gradlew
 RUN ./gradlew clean bootJar --no-daemon -x test
 
 
-# ==========================================
-# ETAPA 2: Execução
-# ==========================================
 FROM eclipse-temurin:25-jre
 
 WORKDIR /app
 
-RUN addgroup --system spring && adduser --system spring --ingroup spring
-
-USER spring:spring
+RUN addgroup --system spring && \
+    adduser --system spring --ingroup spring
 
 COPY --from=build /app/build/libs/*.jar app.jar
+
+RUN chown spring:spring app.jar
+
+USER spring:spring
 
 EXPOSE 8080
 
