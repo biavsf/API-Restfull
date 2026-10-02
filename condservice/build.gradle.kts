@@ -34,6 +34,10 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
+kotlin {
+	jvmToolchain(25)
+}
+
 tasks.withType<Test> {
 	useJUnitPlatform()
 }
