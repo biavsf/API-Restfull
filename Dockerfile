@@ -1,5 +1,5 @@
 # ==========================================
-# ETAPA 1: Build da aplicação
+# ETAPA 1: Build
 # ==========================================
 FROM eclipse-temurin:25-jdk-alpine AS build
 
@@ -14,13 +14,14 @@ RUN dos2unix gradlew && chmod +x gradlew
 RUN ./gradlew bootJar --no-daemon -x test -Dorg.gradle.jvmargs="-Xmx1g"
 
 # ==========================================
-# ETAPA 2: Imagem final
+# ETAPA 2: Execução
 # ==========================================
-FROM eclipse-temurin:17-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 
 RUN addgroup -S spring && adduser -S spring -G spring
+
 USER spring:spring
 
 COPY --from=build /app/build/libs/*.jar app.jar
